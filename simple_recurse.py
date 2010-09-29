@@ -18,7 +18,8 @@ class SimpleRecurse(object):
         self._input_code = input_code
         self.lexer = Lexer(self._input_code)
         self.parser = Parser(self.lexer.tokens)
-        print self.parser.root_node
+        print self.parser.pretty_print(self.parser.root_node)
+        # print str(self.lexer.tokens)
 
         
 

@@ -5,6 +5,7 @@ SYMBOL = "symbol"
 NUM = "num"
 ROOT = "root"
 EXPR = "expr"
+TOKEN = "token"
 
 
 class Lexer(object):
@@ -30,14 +31,18 @@ class Lexer(object):
         
         for char in self._input_code:
             if char in "()":
+                if temp_token:
+                    self.tokens.append(Token(temp_token))
+                    temp_token = ""
                 self.tokens.append(Token(char))
             elif char in string.letters:
                 temp_token += char
             elif char in string.digits:
                 temp_token += char
             elif char in string.whitespace:
-                self.tokens.append(Token(temp_token))
-                temp_token = ""
+                if temp_token:
+                    self.tokens.append(Token(temp_token))
+                    temp_token = ""
 
         return tokens
 
@@ -58,12 +63,18 @@ class Token(object):
         self.value = value
 
         if self.value in "()":
-            self.t_type = SYMBOL
+            self.t_type = TOKEN
         if self.value[0] in string.letters:
-            self.t_type = #FUUUUUU I forgot to add another type for () versus symbol-table symbols. Must fix after class.
+            self.t_type = SYMBOL
         if self.value.isdigit():
             self.t_type = NUM
             self.value = float(self.value)
+
+    def __str__(self):
+        return str(self.value)
+
+    def __repr__(self):
+        return str(self.value)
 
 
     def is_symbol(self, ):
