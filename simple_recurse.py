@@ -16,6 +16,9 @@ class SimpleRecurse(object):
         - `input_code`: a string representation of the code in the text file.
         """
         self._input_code = input_code
+        self.lexer = Lexer(self._input_code)
+        self.parser = Parser(self.lexer.tokens)
+        print self.parser.root_node
 
         
 

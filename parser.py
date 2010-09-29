@@ -12,21 +12,27 @@ class Parser(object):
         - `tokens`: an array of tokens
         """
         self._tokens = tokens
-        self._root_node = ASTNode( None, lexer.ROOT)
+        self.root_node = ASTNode(None, None, lexer.ROOT)
         self._current_node = self._root_node
         
         for token in self._tokens:
             # (, add, 1, 3, )
-            if Token.is_open():
-                new_node = ASTNode(None, lexer.EXP)
-                self._current_node.add_child(new_node)
+            if token.is_open():
+                new_node = ASTNode(self._current_node, None, lexer.EXP)
                 self._current_node = new_node
-                
-                        
-                
-                
-            
+            elif token.is_close():
+                self._current_node = self._current_node.get_parent()
+            elif token.is_symbol():
+                new_node = ASTNode(self._current_node, token.value, lexer.SYMBOL)
+                self._current_node.add_child(new_node)
+            elif token.is_num():
+                new_node = ASTNode(self._current_node, token.value, lexer.NUM)
+                self._current_node.add_child(new_node)
 
+        # check to make sure that our parentheses were balanced
+        if  self._current_node != self._root_node:
+            raise Exception("ERROR: Mismatched parenthesis")
+                
 
 
         
@@ -36,7 +42,7 @@ class ASTNode(object):
     A Node in our AST
     """
     
-    def __init__(self, value, n_type):
+    def __init__(self, parent, value, n_type):
         """
         Generate a node with said parent, value,and type.
         
@@ -59,12 +65,22 @@ class ASTNode(object):
         """
         node.set_parent_node(self)
         self._child_nodes.append(node)
-
         
 
     def set_parent_node(self, node):
         """
-        Set this ASTNodes parent to `node`
+        Set this ASTNodes parent to `node`, and adds itself to the parent's listed child nodes.
         """
         self._parent = node
+        # we should only have node == None for the root node
+        if node != None:
+            node.add_child(self);
 
+
+    def get_parent(self, ):
+        """
+        Returns the parent of this node.
+        """
+
+        return self._parent
+        

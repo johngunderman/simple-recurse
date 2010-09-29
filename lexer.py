@@ -19,6 +19,9 @@ class Lexer(object):
         - `input_code`: a string of code
         """
         self._input_code = input_code
+        self.tokens = []
+
+        self.tokenize()
 
 
     def tokenize(self):
@@ -27,15 +30,16 @@ class Lexer(object):
         
         for char in self._input_code:
             if char in "()":
-                tokens.append(Token(char))
-            else if char in string.letters:
-                temp_token.append(char)
-            else if char in string.digits:
-                temp_token.append(char)
-            else if char in string.whitespace:
-                tokens.append(Token(temp_token))
+                self.tokens.append(Token(char))
+            elif char in string.letters:
+                temp_token += char
+            elif char in string.digits:
+                temp_token += char
+            elif char in string.whitespace:
+                self.tokens.append(Token(temp_token))
                 temp_token = ""
 
+        return tokens
 
 
                 
@@ -56,7 +60,7 @@ class Token(object):
         if self.value in "()":
             self.t_type = SYMBOL
         if self.value[0] in string.letters:
-            self.t_type = TOKEN
+            self.t_type = #FUUUUUU I forgot to add another type for () versus symbol-table symbols. Must fix after class.
         if self.value.isdigit():
             self.t_type = NUM
             self.value = float(self.value)
